@@ -39,27 +39,22 @@ const QuestioniarSchema = new mongoose.Schema({
         default: "",
         trim: true
     },
-    answer_1: { type: String, default: "" },
-    answer_2: { type: String, default: "" },
-    answer_3: { type: String, default: "" },
-    answer_4: { type: String, default: "" },
-    answer_5: { type: String, default: "" },
-    answer_6: { type: String, default: "" },
-    answer_7: { type: String, default: "" },
-    answer_8: { type: String, default: "" },
-    answer_9: { type: String, default: "" },
-    answer_10: { type: String, default: "" },
-    answer_11: { type: String, default: "" },
-    answer_12: { type: String, default: "" },
-    answer_13: { type: String, default: "" },
-    answer_14: { type: String, default: "" },
-    answer_15: { type: String, default: "" },
-    answer_16: { type: String, default: "" },
-    skin_type_value: {
-        type: Map,
-        of: Number,
-        default: {}
-    },
+    answer_1:  { type: Object, default: {} },
+    answer_2: { type: Object, default: {} },
+    answer_3: { type: Object, default: {} },
+    answer_4: { type: Object, default: {} },
+    answer_5: { type: Object, default: {} },
+    answer_6: { type: Object, default: {} },
+    answer_7: { type: Object, default: {} },
+    answer_8: { type: Object, default: {} },
+    answer_9: { type: Object, default: {} },
+    answer_10: { type: Object, default: {} },
+    answer_11: { type: Object, default: {} },
+    answer_12: { type: Object, default: {} },
+    answer_13: { type: Object, default: {} },
+    answer_14: { type: Object, default: {} },
+    answer_15: { type: Object, default: {} },
+    answer_16: { type: Object, default: {} },
     result_type: {
         type: String,
         default: ""
@@ -74,7 +69,9 @@ const QuestioniarSchema = new mongoose.Schema({
         match: [/^\S+@\S+\.\S+$/, 'Please use a valid email address']
     }
 }, {
-    timestamps: true
+    timestamps: true,
+    minimize: false // <--- This forces Mongoose to save empty objects too
+
 });
 
 
