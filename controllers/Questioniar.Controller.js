@@ -24,7 +24,7 @@ class Questioniar{
       console.error('Insert Error:', err);
       return res.status(500).json({
         success: false,
-        message: 'Failed to insert nominee data',
+        message: 'Failed to insert ip data',
         error: err.message
       });
     }
