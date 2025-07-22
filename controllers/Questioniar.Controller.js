@@ -18,7 +18,10 @@ class Questioniar{
 
       return res.status(201).json({
         success: true,
-        message: 'Ip data inserted successfully'
+        message: 'Ip data inserted successfully',
+        data: {
+          unique_id: payload?.unique_id
+        }
       });
     } catch (err) {
       console.error('Insert Error:', err);
@@ -174,6 +177,7 @@ class Questioniar{
     );
     return res.status(200).json({
       message: "Questionnaire data saved successfully",
+      success: true,
       result: finalSkinType,
       breakdown: resultObj,
     });
@@ -182,6 +186,7 @@ class Questioniar{
     console.error(err);
     return res.status(500).json({
       message: "Something went wrong while processing the questionnaire.",
+      success: false
     });
   }
 }
