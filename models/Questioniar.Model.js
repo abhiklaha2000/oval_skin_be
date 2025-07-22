@@ -5,6 +5,10 @@ const QuestioniarSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
+    device_type:{
+        type: String,
+        required: true,
+    },
     country: {
         type: String,
         required: true,
@@ -67,6 +71,23 @@ const QuestioniarSchema = new mongoose.Schema({
         type: String,
         required: false,
         match: [/^\S+@\S+\.\S+$/, 'Please use a valid email address']
+    },
+    status: {
+        type: String,
+        enum: ['active', 'deleted'],
+        default: 'active' // optional, if you want a default value
+    },
+    avg_time_per_qst:{
+        type: String,
+        default: ""
+    },
+    avg_total_time_per_completion:{
+        type: String,
+        default: ""
+    },
+    is_share: {
+        type: Boolean,
+        default: false
     }
 }, {
     timestamps: true,

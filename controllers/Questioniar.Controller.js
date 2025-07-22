@@ -109,8 +109,8 @@ class Questioniar{
     }
 
     // Step 2: Loop through payload and calculate points
-    for (let i = 0; i < payload.length; i++) {
-      const answer = payload[i];
+    for (let i = 0; i < payload?.answers.length; i++) {
+      const answer = payload?.answers[i];
       const answerData = Object.values(answer)[0];
 
       if (answerData?.skin_type && Array.isArray(answerData.skin_type)) {
@@ -157,7 +157,7 @@ class Questioniar{
     }
 
     // this part is done to save the answers in the db 
-    const flattenedAnswers = payload.reduce((acc, curr) => {
+    const flattenedAnswers = payload?.answers.reduce((acc, curr) => {
       const [key, value] = Object.entries(curr)[0];
       acc[key] = value;
       return acc;
@@ -166,7 +166,10 @@ class Questioniar{
     // Step 5: Save data in DB
     const dataToStore = {
      ...flattenedAnswers,
-     result_type: finalSkinType
+     result_type: finalSkinType,
+     is_quiz_completed: payload?.is_quiz_completed,
+     avg_time_per_qst: payload?.avg_time_per_qst,
+     avg_total_time_per_completion:payload?.avg_total_time_per_completion
     };
 
     // Assuming you have a Mongoose model called QuestionnaireResult
@@ -180,6 +183,7 @@ class Questioniar{
       success: true,
       result: finalSkinType,
       breakdown: resultObj,
+      unique_id
     });
 
   } catch (err) {
@@ -223,6 +227,92 @@ static async getQuestioniarData(req, res) {
     return res.status(500).json({
       success: false,
       message: 'Server error while fetching data'
+    });
+  }
+}
+
+/**
+ * Get all questioniar of all the users who has taken part in the quiz
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
+static async getAllQuestioniarData(req, res) {
+  try {
+    const page = parseInt(req.query.page) || 1; // Default to page 1
+    const limit = 10;
+    const skip = (page - 1) * limit;
+
+    // Fetch data with pagination and status = active
+    const [data, total] = await Promise.all([
+      QuestioniarModel.find({ status: 'active' })
+        .skip(skip)
+        .limit(limit)
+        .lean()
+        .sort({ createdAt: -1 }), // optional: sort latest first
+
+      QuestioniarModel.countDocuments({ status: 'active' })
+    ]);
+
+    return res.status(200).json({
+      success: true,
+      message: "Questionnaire data fetched successfully",
+      current_page: page,
+      total_pages: Math.ceil(total / limit),
+      total_records: total,
+      data: {questioniars: data}
+    });
+
+  } catch (err) {
+    console.error("Error fetching questionnaire data:", err);
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong while fetching questionnaire data."
+    });
+  }
+}
+
+/**
+ * Update single feild of the questioniar is_share
+ * @param {*} res 
+ * @param {*} req 
+ */
+static async updateSingleFeild(req, res) {
+  try {
+    const { unique_id } = req.params;
+    const { is_share } = req.body;
+
+    if (typeof is_share !== 'boolean') {
+      return res.status(400).json({
+        success: false,
+        message: "'is_share' must be a boolean value (true or false)"
+      });
+    }
+
+    const updatedData = await QuestioniarModel.findOneAndUpdate(
+      { unique_id },
+      { $set: { is_share } },
+      { new: true }
+    );
+
+    if (!updatedData) {
+      return res.status(404).json({
+        success: false,
+        message: "Questionnaire with the given unique_id not found"
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "is_share field updated successfully",
+      data: {questioniar : updatedData}
+    });
+
+  } catch (err) {
+    console.error("Error updating is_share field:", err);
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong while updating the field"
     });
   }
 }
