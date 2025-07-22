@@ -78,12 +78,12 @@ const QuestioniarSchema = new mongoose.Schema({
         default: 'active' // optional, if you want a default value
     },
     avg_time_per_qst:{
-        type: String,
-        default: ""
+        type: Number,
+        default: 0
     },
     avg_total_time_per_completion:{
-        type: String,
-        default: ""
+        type: Number,
+        default: 0
     },
     is_share: {
         type: Boolean,
