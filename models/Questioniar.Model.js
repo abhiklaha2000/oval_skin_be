@@ -9,6 +9,10 @@ const QuestioniarSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    browser:{
+        type: String,
+        required: true,
+    },
     country: {
         type: String,
         required: true,
