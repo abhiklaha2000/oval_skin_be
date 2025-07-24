@@ -73,7 +73,7 @@ const QuestioniarSchema = new mongoose.Schema({
     },
     email: {
         type: String,
-        required: false,
+        required: "",
         match: [/^\S+@\S+\.\S+$/, 'Please use a valid email address']
     },
     status: {
