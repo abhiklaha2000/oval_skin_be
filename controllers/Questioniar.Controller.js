@@ -478,7 +478,7 @@ static async getDataForDashboard(req,res){
     return res.status(200).json({
       success: true,
       data: {
-         total_questioniar,
+         total_user: total_questioniar,
          quiz_completed_count: completed_count,
          dropoff_user_count: dropoff_user,
          average_avg_time_per_qst,
