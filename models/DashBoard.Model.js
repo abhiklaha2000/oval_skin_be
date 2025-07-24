@@ -1,10 +1,14 @@
 const mongoose = require('mongoose');
 
 const DashboardSchema = new mongoose.Schema({
-    completion_rate:{
+    user_quiz_completed: {
         type: Number,
-        default: false
+        default: 0
     },
+    // completion_rate:{
+    //     type: Number,
+    //     default: 0
+    // },
     total_user_count:{
         type: Number,
         default: 0
@@ -25,10 +29,38 @@ const DashboardSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
-    skin_type_percentage: {
-        type: Object,
-        default: {}
+    FLARE: {
+        type: Number,
+        default: 0
     },
+    BLOOM: {
+        type: Number,
+        default: 0
+    },
+    HAZE: {
+        type: Number,
+        default: 0
+    },
+    CALM: {
+        type: Number,
+        default: 0
+    },
+    FORGE: {
+        type: Number,
+        default: 0
+    },
+    GLOW: {
+        type: Number,
+        default: 0
+    },
+    MUSE: {
+        type: Number,
+        default: 0
+    },
+    DUSK: {
+        type: Number,
+        default: 0
+    }
 }, {
     timestamps: true,
     minimize: false // <--- This forces Mongoose to save empty objects too

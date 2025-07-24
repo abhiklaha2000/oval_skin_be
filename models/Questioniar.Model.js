@@ -92,6 +92,10 @@ const QuestioniarSchema = new mongoose.Schema({
     is_share: {
         type: Boolean,
         default: false
+    },
+    total_share: {
+        type: Number,
+        default: 0
     }
 }, {
     timestamps: true,
