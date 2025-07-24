@@ -310,13 +310,13 @@ static async getAllQuestioniarData(req, res) {
 
     // Fetch data with pagination and status = active
     const [data, total] = await Promise.all([
-      QuestioniarModel.find({ status: 'active' })
+      QuestioniarModel.find()
         .skip(skip)
         .limit(limit)
         .lean()
         .sort({ createdAt: -1 }), // optional: sort latest first
 
-      QuestioniarModel.countDocuments({ status: 'active' })
+      QuestioniarModel.countDocuments()
     ]);
 
     return res.status(200).json({
