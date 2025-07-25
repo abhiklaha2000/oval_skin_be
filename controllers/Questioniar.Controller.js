@@ -3,6 +3,22 @@ const DashboardModel = require('../models/DashBoard.Model')
 
 class Questioniar{
 
+ static isNotEmpty(value) {
+  if (value === null || value === undefined) return false;
+
+  if (typeof value === 'string' && value.trim() === '') return false;
+
+  if (Array.isArray(value) && value.length === 0) return false;
+
+  if (typeof value === 'object' && !Array.isArray(value)) {
+    if (Object.keys(value).length === 0) return false;
+  }
+
+  if (typeof value === 'number' && isNaN(value)) return false;
+
+  return true;
+}
+
   
     /**
      * Function to insert the ip_address data 
@@ -345,21 +361,42 @@ static async getAllQuestioniarData(req, res) {
 static async updateSingleFeild(req, res) {
   try {
     const { unique_id } = req.params;
-    const { is_share } = req.body;
+    const { is_share, email } = req.body;
 
-    if (typeof is_share !== 'boolean') {
+    const updateFields = {};
+    const updateQuery = {};
+
+    // Conditionally add is_share if it's a boolean
+    if (Questioniar.isNotEmpty(is_share)) {
+      if (typeof is_share !== 'boolean') {
+        console.log("cal....1111")
+        return res.status(400).json({
+          success: false,
+          message: "'is_share' must be a boolean value (true or false)"
+        });
+      }
+      updateFields.is_share = is_share;
+      updateQuery.$inc = { total_share: 1 }; // Only increment if is_share is updated
+    }
+
+    // Conditionally add email if it's not empty
+    if (Questioniar.isNotEmpty(email)) {
+      updateFields.email = email;
+    }
+
+    // If nothing is provided to update
+    if (Object.keys(updateFields).length === 0) {
       return res.status(400).json({
         success: false,
-        message: "'is_share' must be a boolean value (true or false)"
+        message: "No valid fields provided to update"
       });
     }
 
+    updateQuery.$set = updateFields;
+
     const updatedData = await QuestioniarModel.findOneAndUpdate(
       { unique_id },
-      {
-        $set: { is_share },
-        $inc: { total_share: 1 }
-      },
+      updateQuery,
       { new: true }
     );
     if (!updatedData) {
@@ -368,21 +405,21 @@ static async updateSingleFeild(req, res) {
         message: "Questionnaire with the given unique_id not found"
       });
     }
-
     return res.status(200).json({
       success: true,
-      message: "is_share field updated successfully",
-      data: {questioniar : updatedData}
+      message: "Fields updated successfully",
+      data: { questioniar: updatedData }
     });
 
   } catch (err) {
-    console.error("Error updating is_share field:", err);
+    console.error("Error updating fields:", err);
     return res.status(500).json({
       success: false,
       message: "Something went wrong while updating the field"
     });
   }
 }
+
 
 
 /**
