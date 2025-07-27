@@ -407,7 +407,8 @@ static async updateSingleFeild(req, res) {
     }
     return res.status(200).json({
       success: true,
-      message: "Fields updated successfully",
+      is_email_sent:  Questioniar.isNotEmpty(email) ? true : false,
+      message: Questioniar.isNotEmpty(email) ? "Email sent successfully" : "Fields updated successfully",
       data: { questioniar: updatedData }
     });
 
@@ -415,6 +416,7 @@ static async updateSingleFeild(req, res) {
     console.error("Error updating fields:", err);
     return res.status(500).json({
       success: false,
+      is_email_sent: false,
       message: "Something went wrong while updating the field"
     });
   }
