@@ -1,5 +1,4 @@
 const QuestioniarModel = require('../models/Questioniar.Model')
-const DashboardModel = require('../models/DashBoard.Model')
 
 class Questioniar{
 
@@ -382,6 +381,7 @@ static async updateSingleFeild(req, res) {
     // Conditionally add email if it's not empty
     if (Questioniar.isNotEmpty(email)) {
       updateFields.email = email;
+      updateFields.is_email = true;
     }
 
     // If nothing is provided to update
@@ -458,6 +458,7 @@ static async getDataForDashboard(req,res){
     // Filter and process completed quizzes
     const all_user_completed_quiz = all_questioniars.filter(user => user?.is_quiz_completed === true)
     const total_user_share_result = all_user_completed_quiz.filter(user => user?.is_share === true).length;
+    const all_email_given_users = all_user_completed_quiz.filter(user => user?.is_email === true).length;
     // loop through the all_questioniars and make a object push the skin type if the result_type is present in the skin_type_result then increase that key value by 1 each time
     for (const user of all_user_completed_quiz) {
       const resultType = user.result_type;
@@ -524,7 +525,8 @@ static async getDataForDashboard(req,res){
          average_avg_total_time_per_completion,
          total_user_share_result,
          skin_type_result,
-         quiz_restart_rate : restartRatePercentage
+         quiz_restart_rate : restartRatePercentage,
+         total_email_given_users: all_email_given_users
       }
     });
   } catch (error) {
